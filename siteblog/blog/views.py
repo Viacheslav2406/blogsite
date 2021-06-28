@@ -6,11 +6,11 @@ from .forms import *
 from django.urls import reverse_lazy
 
 
-# class CreatePost(CreateView):
-#     form_class = PostForm
-#     template_name = 'blog/add_post.html'
-#     success_url = reverse_lazy('home')
-#     raise_exception = True
+class CreatePost(CreateView):
+    form_class = PostForm
+    template_name = 'blog/add_post.html'
+    success_url = reverse_lazy('home')
+    raise_exception = True
 
 
 class ViewPost(DetailView):
@@ -22,7 +22,7 @@ class ViewPost(DetailView):
 class PostsByAuthor(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 4
+    paginate_by = 2
     allow_empty = False
 
     def get_queryset(self):
@@ -37,7 +37,7 @@ class PostsByAuthor(ListView):
 class PostsByCategory(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 4
+    paginate_by = 2
     allow_empty = False
 
     def get_queryset(self):
@@ -52,7 +52,7 @@ class PostsByCategory(ListView):
 class PostsByTag(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 4
+    paginate_by = 2
     allow_empty = False
 
     def get_queryset(self):
@@ -68,7 +68,7 @@ class Home(ListView):
     model = Post
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 4
+    paginate_by = 2
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

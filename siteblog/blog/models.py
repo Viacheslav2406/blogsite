@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from autoslug import AutoSlugField
 
 
 class Tag(models.Model):
@@ -52,7 +53,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
-    slug = models.SlugField(max_length=100, verbose_name='Url', unique=True)
+    slug = AutoSlugField(populate_from='title')
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
