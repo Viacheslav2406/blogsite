@@ -1,0 +1,7 @@
+<div class="list-group">
+  Теги:
+  {% for tag in tags %}
+  <a href="{{ tag.get_absolute_url }}" class="list-group-item list-group-item-action"> #{{ tag.title }}
+  <span class="badge bg-primary rounded-pill">{{ tag.cnt }}</span></a>
+  {% endfor %}
+</div>

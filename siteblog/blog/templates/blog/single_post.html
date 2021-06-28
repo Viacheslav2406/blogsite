@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block sidebar_left %}
+{% include 'inc/_sidebar_left.html' %}
+{% endblock sidebar_left %}
+
+{% block sidebar_right %}
+{% include 'inc/_sidebar_right.html' %}
+{% endblock sidebar_right %}
+
+{% block content %}
+<div class="card mb-3">
+      <div class="card-header">
+        Категория: <a href="{{ post.category.get_absolute_url }}"> {{ post.category }} </a>
+      </div>
+      <div class="card-body">
+        <div class="media">
+          {% if post.photo %}
+            <img src="{{ post.photo.url }}" alt="" width="350" class="mr-3" align="left" hspace="10">
+          {% endif %}
+          <div class="media-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text">{{ post.content }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        {{ post.created_at }} Автор: <a href="{{ post.author.get_absolute_url }}"> {{ post.author }} </a>
+      </div>
+    </div>
+              Теги:
+          {% for tag in post.tags.all %}
+                <a href="{{ tag.get_absolute_url }}">#{{ tag.title }}</a>
+          {% endfor %}
+{% endblock content%}
