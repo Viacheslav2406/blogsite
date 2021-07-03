@@ -1,9 +1,21 @@
 from django.shortcuts import render
 
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from .models import *
 from .forms import *
 from django.urls import reverse_lazy
+
+
+class UpdatePost(UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/update_post.html'
+    success_url = reverse_lazy('home')
+    raise_exception = True
+
+
+class DeletePost(DeleteView):
+    pass
 
 
 class CreatePost(CreateView):

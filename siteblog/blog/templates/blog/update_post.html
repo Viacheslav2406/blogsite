@@ -10,11 +10,11 @@
 
 
 {% block content %}
-<h1> Добавление поста </h1>
+<h1> Редактирование поста </h1>
 
 <form action=" # " method="post" nctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-block"> Добавить пост </button>
+    <button type="submit" class="btn btn-primary btn-block"> Редактировать пост </button>
 </form>
 {% endblock content %}

@@ -15,15 +15,15 @@ from django import forms
 
 
 class PostAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
     save_as = True
     save_on_top = True
-    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views', 'author', 'slug')
+    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views', 'author',)
     list_display_links = ('id', 'title')
     search_fields = ('title',)
     list_filter = ('category', 'tags', 'author')
     readonly_fields = ('views', 'created_at', 'get_photo')
-    fields = ('title', 'slug', 'category', 'tags', 'content', 'photo', 'get_photo', 'views', 'created_at', 'author')
+    fields = ('title', 'category', 'tags', 'content', 'photo', 'get_photo', 'views', 'created_at', 'author')
 
     def get_photo(self, obj):
         if obj.photo:
@@ -34,18 +34,20 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
+    list_display = ('title',)
 
 
 class TagAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
+    list_display = ('title',)
 
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ('nickname', )
     list_display_links = ('nickname', )
     search_fields = ('nickname', )
-    prepopulated_fields = {'slug': ('nickname',)}
+    # prepopulated_fields = {'slug': ('nickname',)}
 
 
 admin.site.register(Post, PostAdmin)

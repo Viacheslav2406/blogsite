@@ -5,7 +5,7 @@ from autoslug import AutoSlugField
 
 class Tag(models.Model):
     title = models.CharField(max_length=55)
-    slug = models.SlugField(max_length=55, verbose_name='Url', unique=True)
+    slug = AutoSlugField(populate_from='title')
 
     def __str__(self):
         return self.title
@@ -21,7 +21,7 @@ class Tag(models.Model):
 
 class Author(models.Model):
     nickname = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=55, verbose_name='Url', unique=True)
+    slug = AutoSlugField(populate_from='title')
 
     def __str__(self):
         return self.nickname
@@ -37,7 +37,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, verbose_name='Url', unique=True)
+    slug = AutoSlugField(populate_from='title')
 
     def __str__(self):
         return self.title
@@ -61,7 +61,7 @@ class Post(models.Model):
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='posts')
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='posts')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
 
     def __str__(self):
         return self.title
