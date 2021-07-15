@@ -10,6 +10,8 @@ urlpatterns = [
     path('post/add_post/', CreatePost.as_view(), name='add_post'),
     path('/post/<str:slug>/update_post/', UpdatePost.as_view(), name='update_post'),
     path('register/', register, name='register'),
+    path('login/', user_login, name='login'),
+    path('logout/', user_logout, name='logout'),
 
 
 ]

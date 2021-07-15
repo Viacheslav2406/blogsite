@@ -9,9 +9,11 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
+        {% if request.user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'add_post' %}">Добавить пост</a>
         </li>
+        {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
@@ -26,8 +28,18 @@
         <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
+        {% if request.user.is_authenticated %}
+         <li class="navbar-text">
+        Добро пожаловать {{ user.username }}!! <a href="{% url 'logout' %}">Выход</a>
+         </li>
+        {% else %}
         <li class="nav-item">
           <a class="nav-link active" href="{% url 'register' %}" tabindex="-1" aria-disabled="true">Регистрация</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'login' %}" tabindex="-1" aria-disabled="true">Авторизация</a>
+          {% endif %}
+
         </li>
       </ul>
       <form class="d-flex">

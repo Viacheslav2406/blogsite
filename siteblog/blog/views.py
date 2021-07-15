@@ -2,10 +2,27 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from .models import *
-from .forms import *
+from .forms import UserLoginForm, UserRegisterForm, PostForm
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserLoginForm()
+    return render(request, 'blog/login.html', {'form': form})
 
 
 def register(request):
@@ -13,6 +30,7 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            login(request, user)
             messages.success(request, 'Вы успешно зарегистрировались')
             return redirect('home')
         else:
@@ -55,11 +73,11 @@ class PostsByAuthor(ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Post.author_set.all()
+        return Post.objects.filter(author__username=self.author__username)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = User.objects.get(slug=self.kwargs['slug'])
+        context['title'] = User.objects.get(author_username=self.kwargs['author'])
         return context
 
 
