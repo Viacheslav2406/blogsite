@@ -1,9 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from .models import *
 from .forms import *
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Вы успешно зарегистрировались')
+            return redirect('home')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'blog/register.html', {'form': form})
 
 
 class UpdatePost(UpdateView):
@@ -19,6 +35,7 @@ class DeletePost(DeleteView):
 
 
 class CreatePost(CreateView):
+    model = Post
     form_class = PostForm
     template_name = 'blog/add_post.html'
     success_url = reverse_lazy('home')
@@ -38,11 +55,11 @@ class PostsByAuthor(ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Post.objects.filter(author__slug=self.kwargs['slug'])
+        return Post.author_set.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = Author.objects.get(slug=self.kwargs['slug'])
+        context['title'] = User.objects.get(slug=self.kwargs['slug'])
         return context
 
 

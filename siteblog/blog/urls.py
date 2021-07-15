@@ -9,5 +9,7 @@ urlpatterns = [
     path('/author/<str:slug>/', PostsByAuthor.as_view(), name='author'),
     path('post/add_post/', CreatePost.as_view(), name='add_post'),
     path('/post/<str:slug>/update_post/', UpdatePost.as_view(), name='update_post'),
+    path('register/', register, name='register'),
+
 
 ]

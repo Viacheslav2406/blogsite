@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block title %}
+    Регистрация :: {{ block.super }}
+{% endblock title %}
 
 {% block sidebar_left %}
 {% include 'inc/_sidebar_left.html' %}
@@ -10,11 +13,11 @@
 
 
 {% block content %}
-<h1> Добавление поста </h1>
+<h1> Регистрация </h1>
 
-<form action=" # " method="post" enctype="multipart/form-data">
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-block"> Добавить пост </button>
+    <button type="submit" class="btn btn-primary btn-block"> Регистрация </button>
 </form>
 {% endblock content %}

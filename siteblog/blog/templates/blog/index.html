@@ -28,7 +28,7 @@
       </div>
       <div class="card-footer text-muted">
           {{ post.created_at }}
-          Автор: <a href="{{ post.author.get_absolute_url }}"> {{ post.author }} </a>
+          Автор: <a href="{{ user.get_absolute_url }}"> {{ post.author }} </a>
       </div>
     </div>
     {% endfor %}

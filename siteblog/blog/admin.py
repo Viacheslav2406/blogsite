@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 
-from .models import Post, Author, Tag, Category
+from .models import *
 from django import forms
 
 
@@ -18,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('title',)}
     save_as = True
     save_on_top = True
-    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views', 'author',)
+    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views',)
     list_display_links = ('id', 'title')
     search_fields = ('title',)
     list_filter = ('category', 'tags', 'author')
@@ -43,15 +43,15 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('title',)
 
 
-class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('nickname', )
-    list_display_links = ('nickname', )
-    search_fields = ('nickname', )
-    # prepopulated_fields = {'slug': ('nickname',)}
+# class AuthorAdmin(admin.ModelAdmin):
+#     list_display = ('nickname', )
+#     list_display_links = ('nickname', )
+#     search_fields = ('nickname', )
+#     # prepopulated_fields = {'slug': ('nickname',)}
 
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Author, AuthorAdmin)
+# admin.site.register(Author, AuthorAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Category, CategoryAdmin)
 
