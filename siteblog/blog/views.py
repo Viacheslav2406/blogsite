@@ -11,9 +11,10 @@ from django.core.mail import send_mail
 
 def contact(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = PostForm(request.POST)
         if form.is_valid():
-            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'v.bakalo24@ukr.net', ['v.bakalo24@gmail.com'], fail_silently=False)
+            mail = send_mail(form.cleaned_data['title'], form.cleaned_data['content'],'v.bakalo24@ukr.net', ['v.bakalo24@gmail.com'], fail_silently=False)
+            form.save()
             if mail:
                 messages.success(request, 'Письмо отправлено')
                 return redirect('contact')
@@ -22,7 +23,7 @@ def contact(request):
         else:
             messages.error(request, 'Ошибка валидации')
     else:
-        form = ContactForm()
+        form = PostForm()
     return render(request, 'blog/contact.html', {'form': form})
 
 

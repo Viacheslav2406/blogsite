@@ -134,8 +134,8 @@ MEDIA_ROOT = BASE_DIR/'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_HOST = 'smtp.ukr.net'
-EMAIL_HOST_USER = 'v.bakalo24@ukr.net'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'v.bakalo24@gmail.com'
 EMAIL_HOST_PASSWORD = '#'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
