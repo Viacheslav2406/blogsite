@@ -85,19 +85,19 @@ class ViewPost(DetailView):
     context_object_name = 'post'
 
 
-class PostsByAuthor(ListView):
-    template_name = 'blog/index.html'
-    context_object_name = 'posts'
-    paginate_by = 2
-    allow_empty = False
-
-    def get_queryset(self):
-        return Post.objects.filter(author__username=self.author__username)
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = User.objects.get(author_username=self.kwargs['author'])
-        return context
+# class PostsByAuthor(ListView):
+#     template_name = 'blog/index.html'
+#     context_object_name = 'posts'
+#     paginate_by = 2
+#     allow_empty = False
+#
+#     def get_queryset(self):
+#         return Post.objects.filter(pk=self.kwargs['author'])
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = User.objects.get(author=self.kwargs['author'])
+#         return context
 
 
 class PostsByCategory(ListView):

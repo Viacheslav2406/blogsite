@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from autoslug import AutoSlugField
 from django.contrib.auth.models import User
+from django.utils.deconstruct import deconstructible
 
 
 class Tag(models.Model):
@@ -61,7 +62,7 @@ class Post(models.Model):
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', default=User.username)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
 
     def __str__(self):
@@ -76,3 +77,17 @@ class Post(models.Model):
         ordering = ['-created_at']
 
 
+class Comment(models.Model):
+    post = models.ManyToManyField(Post, related_name='comments')
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f'Comment by {self.name} on {self.post}'

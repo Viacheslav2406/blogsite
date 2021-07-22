@@ -43,6 +43,12 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('title',)
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'created_at', 'active')
+    list_filter = ('active', 'created_at', 'updated_at')
+    search_fields = ('name', 'email', 'body')
+
+
 # class AuthorAdmin(admin.ModelAdmin):
 #     list_display = ('nickname', )
 #     list_display_links = ('nickname', )
@@ -54,4 +60,4 @@ admin.site.register(Post, PostAdmin)
 # admin.site.register(Author, AuthorAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Category, CategoryAdmin)
-
+admin.site.register(Comment, CommentAdmin)
