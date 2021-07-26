@@ -24,9 +24,10 @@
           </div>
         </div>
       </div>
-      <div class="card-footer text-muted mt-3">
-        {{ post.created_at }} Автор: <a href="{{ post.author.get_absolute_url }}"> {{ post.author }}
-      </a>
+      <div class="card-footer text-muted">
+            {{ post.created_at }}
+          <br>Автор: <a href="{% url 'author' %}">{{ post.author }}</a></br>
+          Количество просмотров: {{ post.views }}
       </div>
     </div>
               Теги:
@@ -34,9 +35,38 @@
                 <a href="{{ tag.get_absolute_url }}">#{{ tag.title }}</a>
           {% endfor %}
 
-    <div class="container mt-3">
-        <a href="{% url 'update_post' slug=post.slug %}" class="btn btn-primary">Редактировать пост</a>
-        <button type="button" class="btn btn-danger">Удалить пост</button>
-    </div>
+    {% if post.author == request.user %}
+        <div class="container mt-3">
+            <a href="{% url 'update_post' slug=post.slug %}" class="btn btn-primary">Редактировать пост</a>
+            <a href="{% url 'delete_post' slug=post.slug %}" class="btn btn-danger">Удалить пост</a>
+        </div>
+    {% endif %}
+
+{% if request.user.is_authenticated %}
+    <p>Добавить комментарий</p>
+            <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block"> Добавить </button>
+        </form>
+
+{% endif %}
+
+    <p><b>Комментарии</b> ({{ post.comments.all.count }})</p>
+    {% for comment in post.comments.all %}
+
+<div class="card-header">
+    <b>{{ comment.author }}</b> {{ comment.created_at }}
+      </div>
+      <div class="card-body">
+        <div class="media">
+          <div class="media-body">
+          <p class="card-text">{{ comment.body }}</p>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
+
 {% endblock content%}
 

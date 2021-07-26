@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic.edit import FormMixin
+
 from .models import *
-from .forms import UserLoginForm, UserRegisterForm, PostForm, ContactForm
+from .forms import UserLoginForm, UserRegisterForm, PostForm, CommentForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.mail import send_mail
+from django.db.models import F
 
 
 def contact(request):
@@ -63,12 +66,17 @@ class UpdatePost(UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/update_post.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('update_post')
     raise_exception = True
 
 
 class DeletePost(DeleteView):
-    pass
+    model = Post
+    template_name = 'blog/single_post.html'
+    success_url = reverse_lazy('home')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 
 class CreatePost(CreateView):
@@ -79,25 +87,46 @@ class CreatePost(CreateView):
     raise_exception = True
 
 
-class ViewPost(DetailView):
+class ViewPost(DetailView, FormMixin):
     model = Post
     template_name = 'blog/single_post.html'
     context_object_name = 'post'
+    form_class = CommentForm
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('post', kwargs={'slug': self.get_object().slug})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            messages.success(request, 'Комментарий создан')
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.post = self.get_object()
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object.views = F('views') + 1
+        self.object.save()
+        self.object.refresh_from_db()
+        return context
 
 
-# class PostsByAuthor(ListView):
-#     template_name = 'blog/index.html'
-#     context_object_name = 'posts'
-#     paginate_by = 2
-#     allow_empty = False
-#
-#     def get_queryset(self):
-#         return Post.objects.filter(pk=self.kwargs['author'])
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = User.objects.get(author=self.kwargs['author'])
-#         return context
+class PostsByAuthor(ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+    paginate_by = 2
+    allow_empty = False
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
 
 
 class PostsByCategory(ListView):

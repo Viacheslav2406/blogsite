@@ -44,9 +44,9 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'created_at', 'active')
+    list_display = ('author', 'email', 'created_at', 'active')
     list_filter = ('active', 'created_at', 'updated_at')
-    search_fields = ('name', 'email', 'body')
+    search_fields = ('author', 'email', 'body')
 
 
 # class AuthorAdmin(admin.ModelAdmin):

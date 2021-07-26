@@ -1,12 +1,9 @@
 from django import forms
-from .models import Post
+
+
+from .models import Post, Comment
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-
-
-class ContactForm(forms.Form):
-    subject = forms.CharField(label='Тема', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    content = forms.CharField(label='Текст', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
 
 
 class UserLoginForm(AuthenticationForm):
@@ -28,11 +25,18 @@ class UserRegisterForm(UserCreationForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'tags', 'author', 'photo',]
+        fields = ['title', 'content', 'category', 'tags', 'author', 'photo']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
-            'author': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+        widgets = {
+            'body': forms.Textarea(attrs={'class': 'form-control', 'rows': 5})}

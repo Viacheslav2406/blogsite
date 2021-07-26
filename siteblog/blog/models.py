@@ -55,14 +55,14 @@ class Category(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
-    slug = AutoSlugField(populate_from='title', always_update=True)
+    slug = AutoSlugField(populate_from='title', always_update=True, unique=True)
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=True, null=True, default=User)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
 
     def __str__(self):
@@ -78,16 +78,18 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ManyToManyField(Post, related_name='comments')
-    name = models.CharField(max_length=80)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', blank=True, null=True)
     email = models.EmailField()
-    body = models.TextField()
+    body = models.TextField(verbose_name='Текст комментария')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
     active = models.BooleanField(default=True)
 
     class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
         ordering = ['created_at']
 
     def __str__(self):
-        return f'Comment by {self.name} on {self.post}'
+        return f'Comment by {self.author} on {self.post}'
