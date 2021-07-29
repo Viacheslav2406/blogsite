@@ -18,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('title',)}
     save_as = True
     save_on_top = True
-    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views',)
+    list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views', 'author')
     list_display_links = ('id', 'title')
     search_fields = ('title',)
     list_filter = ('category', 'tags', 'author')
@@ -44,9 +44,9 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('author', 'email', 'created_at', 'active')
+    list_display = ('author', 'created_at', 'active')
     list_filter = ('active', 'created_at', 'updated_at')
-    search_fields = ('author', 'email', 'body')
+    search_fields = ('author',  'body')
 
 
 # class AuthorAdmin(admin.ModelAdmin):

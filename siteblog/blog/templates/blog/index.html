@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="card-footer text-muted">
-          {{ post.created_at }}
+          {{ post.created_at|date:'d.m.Y' }}
           <br>Автор: <a href="{% url 'author' %}"> {{post.author}} </a></br>
           Количество просмотров: {{ post.views }}
       </div>

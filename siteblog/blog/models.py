@@ -53,20 +53,21 @@ class Category(models.Model):
         ordering = ['title']
 
 
+def get_user(self, request):
+    return self.request.user
+
+
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
     slug = AutoSlugField(populate_from='title', always_update=True, unique=True)
-    content = models.TextField(blank=True)
+    content = models.TextField(blank=True, verbose_name='Текст поста')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name='Фото')
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=True, null=True, default=User)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
-
-    def __str__(self):
-        return self.title
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=True, null=True, verbose_name='Автор')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', verbose_name='Категория')
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'slug': self.slug})
@@ -80,7 +81,6 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', blank=True, null=True)
-    email = models.EmailField()
     body = models.TextField(verbose_name='Текст комментария')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')

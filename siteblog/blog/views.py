@@ -76,7 +76,8 @@ class DeletePost(DeleteView):
     success_url = reverse_lazy('home')
 
     def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+        messages.success(request, 'Пост успешно удален')
+        return self.delete(request, *args, **kwargs)
 
 
 class CreatePost(CreateView):
@@ -85,6 +86,10 @@ class CreatePost(CreateView):
     template_name = 'blog/add_post.html'
     success_url = reverse_lazy('home')
     raise_exception = True
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(CreatePost, self).form_valid(form)
 
 
 class ViewPost(DetailView, FormMixin):
@@ -168,5 +173,30 @@ class Home(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Blog'
+        return context
+
+
+def search(request):
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        posts = Post.objects.filter(title__icontains=search_query)
+    else:
+        posts = Post.objects.all()
+
+    return render(request, 'blog/search.html', context=posts)
+
+
+class Search(ListView):
+    template_name = 'blog/search.html'
+    context_object_name = 'posts'
+    paginate_by = 1
+
+    def get_queryset(self):
+        return Post.objects.filter(title__icontains=self.request.GET.get('s'))
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['s'] = f"{self.request.GET.get('s')}&"
         return context
 
