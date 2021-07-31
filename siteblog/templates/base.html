@@ -47,6 +47,7 @@
           CONTENT
       {% endblock content%}
 
+          {% block pagination %}
              {% if page_obj.has_other_pages %}
 
                   <nav aria-label="...">
@@ -82,7 +83,9 @@
                       </ul>
                   </nav>
                   {% endif %}
-      </div>
+
+      {% endblock pagination %}
+ </div>
 
       <div class="col-md-2">
           {% block sidebar_right %}
