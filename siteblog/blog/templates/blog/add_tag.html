@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Добавление тега : {{ block.super }}
+{% endblock title %}
+
+
+{% block content %}
+<h1> Добавление тега </h1>
+
+<form action=" # " method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary btn-block"> Добавить тег </button>
+</form>
+{% endblock content %}

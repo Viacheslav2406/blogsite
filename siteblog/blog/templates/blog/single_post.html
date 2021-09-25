@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 
-{% block sidebar_left %}
-{% include 'inc/_sidebar_left.html' %}
-{% endblock sidebar_left %}
-
-{% block sidebar_right %}
-{% include 'inc/_sidebar_right.html' %}
-{% endblock sidebar_right %}
 
 {% block content %}
 <div class="card mb-3">
@@ -26,7 +19,7 @@
       </div>
       <div class="card-footer text-muted">
             {{ post.created_at }}
-          <br>Автор: <a href="{% url 'author' %}">{{ post.author }}</a></br>
+          <br>Автор: {{ post.author }}</br>
           Количество просмотров: {{ post.views }}
       </div>
     </div>
@@ -35,15 +28,19 @@
                 <a href="{{ tag.get_absolute_url }}">#{{ tag.title }}</a>
           {% endfor %}
 
-    {% if post.author == request.user %}
+
+
         <div class="container mt-3">
+            <a href="{% url 'send_post' slug=post.slug %}"> <button type="submit" class="btn btn-primary btn-block">Получить пост на Email </button></a>
+            {% if post.author == request.user %}
             <a href="{% url 'update_post' slug=post.slug %}" class="btn btn-primary">Редактировать пост</a>
             <a href="{% url 'delete_post' slug=post.slug %}" class="btn btn-danger">Удалить пост</a>
+        {% endif %}
         </div>
-    {% endif %}
+
 
 {% if request.user.is_authenticated %}
-    <p>Добавить комментарий</p>
+    <p><b>Добавить комментарий</b></p>
             <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
@@ -57,11 +54,16 @@
 
 <div class="card-header">
     <b>{{ comment.author }}</b> {{ comment.created_at }}
+    {% if comment.author == request.user %}
+            <a href="{% url 'delete_comment' slug=post.slug pk=comment.pk %}" class="btn btn-danger">Удалить комметрий</a>
+    {% endif %}
+
       </div>
       <div class="card-body">
         <div class="media">
           <div class="media-body">
           <p class="card-text">{{ comment.body }}</p>
+
           </div>
         </div>
       </div>

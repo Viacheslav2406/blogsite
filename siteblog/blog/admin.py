@@ -1,21 +1,22 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
 from .models import *
 from django import forms
 
 
-# class PostAdminForm(forms.ModelForm):
-#     content = forms.CharField(widget=CKEditorUploadingWidget())
-#
-#     class Meta:
-#         model = Post
-#         fields = '__all__'
+class PostAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+        model = Post
+        fields = '__all__'
 
 
 class PostAdmin(admin.ModelAdmin):
-    # prepopulated_fields = {'slug': ('title',)}
+    form = PostAdminForm
     save_as = True
     save_on_top = True
     list_display = ('id', 'title', 'category', 'created_at', 'get_photo', 'views', 'author')
@@ -34,12 +35,10 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    # prepopulated_fields = {'slug': ('title',)}
     list_display = ('title',)
 
 
 class TagAdmin(admin.ModelAdmin):
-    # prepopulated_fields = {'slug': ('title',)}
     list_display = ('title',)
 
 
@@ -49,15 +48,7 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('author',  'body')
 
 
-# class AuthorAdmin(admin.ModelAdmin):
-#     list_display = ('nickname', )
-#     list_display_links = ('nickname', )
-#     search_fields = ('nickname', )
-#     # prepopulated_fields = {'slug': ('nickname',)}
-
-
 admin.site.register(Post, PostAdmin)
-# admin.site.register(Author, AuthorAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comment, CommentAdmin)

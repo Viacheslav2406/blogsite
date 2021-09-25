@@ -3,21 +3,18 @@
     Обратная связь :: {{ block.super }}
 {% endblock title %}
 
-{% block sidebar_left %}
-{% include 'inc/_sidebar_left.html' %}
-{% endblock sidebar_left %}
-
-{% block sidebar_right %}
-{% include 'inc/_sidebar_right.html' %}
-{% endblock sidebar_right %}
-
-
 {% block content %}
-<h1> Обратная связь </h1>
+
+<h1> Обратная связь  </h1>
 
 <form method="post">
     {% csrf_token %}
+    {{ form_media }}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary btn-block"> Отправить </button>
 </form>
 {% endblock content %}
+
+{% load static %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>

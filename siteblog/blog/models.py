@@ -2,7 +2,8 @@ from django.db import models
 from django.urls import reverse
 from autoslug import AutoSlugField
 from django.contrib.auth.models import User
-from django.utils.deconstruct import deconstructible
+
+
 
 
 class Tag(models.Model):
@@ -21,25 +22,9 @@ class Tag(models.Model):
         ordering = ['title']
 
 
-# class Author(models.Model):
-#     nickname = models.CharField(max_length=50)
-#     slug = AutoSlugField(populate_from='title')
-#
-#     def __str__(self):
-#         return self.nickname
-#
-#     def get_absolute_url(self):
-#         return reverse('author', kwargs={'slug': self.slug})
-#
-#     class Meta:
-#         verbose_name = 'Автор'
-#         verbose_name_plural = "Авторы"
-#         ordering = ['nickname']
-
-
 class Category(models.Model):
     title = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='title', always_update=True)
+    slug = AutoSlugField(populate_from='title', always_update=True, unique=True)
 
     def __str__(self):
         return self.title
@@ -53,10 +38,6 @@ class Category(models.Model):
         ordering = ['title']
 
 
-def get_user(self, request):
-    return self.request.user
-
-
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
     slug = AutoSlugField(populate_from='title', always_update=True, unique=True)
@@ -65,7 +46,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name='Фото')
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
-    tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
+    tags = models.ManyToManyField(Tag, blank=True, default='', related_name='posts', verbose_name='Теги')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=True, null=True, verbose_name='Автор')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', verbose_name='Категория')
 
@@ -93,3 +74,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author} on {self.post}'
+
+

@@ -1,9 +1,11 @@
 from django import forms
 
 
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+
+from ckeditor.widgets import CKEditorWidget
 
 
 class UserLoginForm(AuthenticationForm):
@@ -22,6 +24,16 @@ class UserRegisterForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
+class RelationForm(forms.Form):
+    subject = forms.CharField(label='Тема', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    content = forms.CharField(label='Текст', widget=forms.Textarea(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+
+class SendPostEmail(forms.Form):
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
@@ -32,6 +44,16 @@ class PostForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
+
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['title']
+
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'})
         }
 
 

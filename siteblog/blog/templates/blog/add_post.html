@@ -1,20 +1,16 @@
 {% extends 'base.html' %}
-
-{% block sidebar_left %}
-{% include 'inc/_sidebar_left.html' %}
-{% endblock sidebar_left %}
-
-{% block sidebar_right %}
-{% include 'inc/_sidebar_right.html' %}
-{% endblock sidebar_right %}
-
+{% block title %}
+    Добавление поста : {{ block.super }}
+{% endblock title %}
 
 {% block content %}
 <h1> Добавление поста </h1>
 
 <form action=" # " method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
     {{ form.as_p }}
+
     <button type="submit" class="btn btn-primary btn-block"> Добавить пост </button>
 </form>
 {% endblock content %}

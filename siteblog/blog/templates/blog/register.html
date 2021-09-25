@@ -3,14 +3,6 @@
     Регистрация :: {{ block.super }}
 {% endblock title %}
 
-{% block sidebar_left %}
-{% include 'inc/_sidebar_left.html' %}
-{% endblock sidebar_left %}
-
-{% block sidebar_right %}
-{% include 'inc/_sidebar_right.html' %}
-{% endblock sidebar_right %}
-
 
 {% block content %}
 <h1> Регистрация </h1>
@@ -20,4 +12,5 @@
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary btn-block"> Регистрация </button>
 </form>
+
 {% endblock content %}

@@ -2,22 +2,23 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.views.generic.edit import FormMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import *
-from .forms import UserLoginForm, UserRegisterForm, PostForm, CommentForm
+from .forms import UserLoginForm, UserRegisterForm, PostForm, CommentForm, RelationForm, TagForm, SendPostEmail
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.mail import send_mail
-from django.db.models import F
+from django.db.models import F, Q
 
 
 def contact(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = RelationForm(request.POST)
         if form.is_valid():
-            mail = send_mail(form.cleaned_data['title'], form.cleaned_data['content'],'v.bakalo24@ukr.net', ['v.bakalo24@gmail.com'], fail_silently=False)
-            form.save()
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'],'Viacheslavtest24@gmail.com', [form.cleaned_data['email']], fail_silently=False)
+
             if mail:
                 messages.success(request, 'Письмо отправлено')
                 return redirect('contact')
@@ -26,8 +27,27 @@ def contact(request):
         else:
             messages.error(request, 'Ошибка валидации')
     else:
-        form = PostForm()
+        form = RelationForm()
     return render(request, 'blog/contact.html', {'form': form})
+
+
+def send_post_to_email(request, slug):
+    post = Post.objects.get(slug=slug)
+    if request.method == "POST":
+        form = SendPostEmail(request.POST)
+        if form.is_valid():
+            mail = send_mail(post.title, post.content, 'Viacheslavtest24@gmail.com', [form.cleaned_data['email']], fail_silently=False)
+            if mail:
+                messages.success(request, 'Пост успешно отправлен')
+                return redirect('home')
+            else:
+                messages.error(request, 'Ошибка отправки')
+
+        else:
+            messages.error(request, 'Ошибка валидации')
+    else:
+        form = SendPostEmail()
+    return render(request, 'blog/send_post.html', {'form': form})
 
 
 def user_logout(request):
@@ -62,12 +82,15 @@ def register(request):
     return render(request, 'blog/register.html', {'form': form})
 
 
-class UpdatePost(UpdateView):
+class UpdatePost(SuccessMessageMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/update_post.html'
-    success_url = reverse_lazy('update_post')
+    success_message = 'Пост успешно отредактирован'
     raise_exception = True
+
+    def get_success_url(self):
+        return reverse_lazy('post', kwargs={'slug': self.get_object().slug})
 
 
 class DeletePost(DeleteView):
@@ -80,6 +103,19 @@ class DeletePost(DeleteView):
         return self.delete(request, *args, **kwargs)
 
 
+class DeleteComment(DeleteView):
+    model = Comment
+    template_name = 'blog/single_post.html'
+
+    def get(self, request, *args, **kwargs):
+        messages.success(request, 'Комментарий успешно удален')
+        return self.delete(request, *args, **kwargs)
+
+    def get_success_url(self, **kwargs):
+        post = Post.objects.get(comments=self.get_object())
+        return reverse_lazy('post', kwargs={'slug': post.slug})
+
+
 class CreatePost(CreateView):
     model = Post
     form_class = PostForm
@@ -90,6 +126,11 @@ class CreatePost(CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super(CreatePost, self).form_valid(form)
+
+
+def get_popular_posts(request):
+    posts = Post.objects.order_by('-views')[:5]
+    return render(request, 'blog/popular_posts.html', {'posts': posts})
 
 
 class ViewPost(DetailView, FormMixin):
@@ -124,10 +165,17 @@ class ViewPost(DetailView, FormMixin):
         return context
 
 
-class PostsByAuthor(ListView):
+class CreateTag(CreateView):
+    model = Tag
+    form_class = TagForm
+    template_name = 'blog/add_tag.html'
+    success_url = reverse_lazy('add_tag')
+
+
+class MyPosts(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 5
     allow_empty = False
 
     def get_queryset(self):
@@ -137,7 +185,7 @@ class PostsByAuthor(ListView):
 class PostsByCategory(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 5
     allow_empty = False
 
     def get_queryset(self):
@@ -152,7 +200,7 @@ class PostsByCategory(ListView):
 class PostsByTag(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 5
     allow_empty = False
 
     def get_queryset(self):
@@ -168,7 +216,7 @@ class Home(ListView):
     model = Post
     template_name = 'blog/index.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,10 +227,12 @@ class Home(ListView):
 class Search(ListView):
     template_name = 'blog/search.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 5
 
     def get_queryset(self):
-        return Post.objects.filter(title__icontains=self.request.GET.get('s'))
+        return Post.objects.filter(Q(title__icontains=self.request.GET.get('s'))|
+                                   Q(content__icontains=self.request.GET.get('s'))|
+                                   Q(tags__title__icontains=self.request.GET.get('s')))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

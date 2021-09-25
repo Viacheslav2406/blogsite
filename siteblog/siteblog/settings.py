@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    'ckeditor_uploader',
 
     'blog.apps.BlogConfig',
 
@@ -120,10 +122,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR/'static'
 STATICFILES_DIRS = [BASE_DIR/'siteblog/static',
                     ]
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media'
@@ -135,7 +138,10 @@ MEDIA_ROOT = BASE_DIR/'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'v.bakalo24@gmail.com'
-EMAIL_HOST_PASSWORD = '#'
+EMAIL_HOST_USER = 'Viacheslavtest24@gmail.com'
+EMAIL_HOST_PASSWORD = 'rururutebe'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"

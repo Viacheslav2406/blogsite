@@ -1,13 +1,7 @@
 {% extends 'base.html' %}
-
-{% block sidebar_left %}
-{% include 'inc/_sidebar_left.html' %}
-{% endblock sidebar_left %}
-
-{% block sidebar_right %}
-{% include 'inc/_sidebar_right.html' %}
-{% endblock sidebar_right %}
-
+{% block title %}
+    Редактирование поста: {{ block.super }}
+{% endblock title %}
 
 {% block content %}
 <h1> Редактирование поста </h1>
