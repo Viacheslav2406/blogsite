@@ -4,10 +4,8 @@ from autoslug import AutoSlugField
 from django.contrib.auth.models import User
 
 
-
-
 class Tag(models.Model):
-    title = models.CharField(max_length=55)
+    title = models.CharField(max_length=55, verbose_name='Название')
     slug = AutoSlugField(populate_from='title', always_update=True)
 
     def __str__(self):

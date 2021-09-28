@@ -31,23 +31,7 @@ def contact(request):
     return render(request, 'blog/contact.html', {'form': form})
 
 
-def send_post_to_email(request, slug):
-    post = Post.objects.get(slug=slug)
-    if request.method == "POST":
-        form = SendPostEmail(request.POST)
-        if form.is_valid():
-            mail = send_mail(post.title, post.content, 'Viacheslavtest24@gmail.com', [form.cleaned_data['email']], fail_silently=False)
-            if mail:
-                messages.success(request, 'Пост успешно отправлен')
-                return redirect('home')
-            else:
-                messages.error(request, 'Ошибка отправки')
 
-        else:
-            messages.error(request, 'Ошибка валидации')
-    else:
-        form = SendPostEmail()
-    return render(request, 'blog/send_post.html', {'form': form})
 
 
 def user_logout(request):
@@ -103,17 +87,6 @@ class DeletePost(DeleteView):
         return self.delete(request, *args, **kwargs)
 
 
-class DeleteComment(DeleteView):
-    model = Comment
-    template_name = 'blog/single_post.html'
-
-    def get(self, request, *args, **kwargs):
-        messages.success(request, 'Комментарий успешно удален')
-        return self.delete(request, *args, **kwargs)
-
-    def get_success_url(self, **kwargs):
-        post = Post.objects.get(comments=self.get_object())
-        return reverse_lazy('post', kwargs={'slug': post.slug})
 
 
 class CreatePost(CreateView):
@@ -131,6 +104,25 @@ class CreatePost(CreateView):
 def get_popular_posts(request):
     posts = Post.objects.order_by('-views')[:5]
     return render(request, 'blog/popular_posts.html', {'posts': posts})
+
+
+def send_post_to_email(request, slug):
+    post = Post.objects.get(slug=slug)
+    if request.method == "POST":
+        form = SendPostEmail(request.POST)
+        if form.is_valid():
+            mail = send_mail(post.title, post.content, 'Viacheslavtest24@gmail.com', [form.cleaned_data['email']], fail_silently=False)
+            if mail:
+                messages.success(request, 'Пост успешно отправлен')
+                return redirect('home')
+            else:
+                messages.error(request, 'Ошибка отправки')
+
+        else:
+            messages.error(request, 'Ошибка валидации')
+    else:
+        form = SendPostEmail()
+    return render(request, 'blog/send_post.html', {'form': form})
 
 
 class ViewPost(DetailView, FormMixin):
@@ -163,6 +155,18 @@ class ViewPost(DetailView, FormMixin):
         self.object.save()
         self.object.refresh_from_db()
         return context
+
+class DeleteComment(DeleteView):
+    model = Comment
+    template_name = 'blog/single_post.html'
+
+    def get(self, request, *args, **kwargs):
+        messages.success(request, 'Комментарий успешно удален')
+        return self.delete(request, *args, **kwargs)
+
+    def get_success_url(self, **kwargs):
+        post = Post.objects.get(comments=self.get_object())
+        return reverse_lazy('post', kwargs={'slug': post.slug})
 
 
 class CreateTag(CreateView):
