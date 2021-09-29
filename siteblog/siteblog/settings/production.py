@@ -141,7 +141,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 # STATIC_ROOT = BASE_DIR/'static'
-STATIC_ROOT = BASE_DIR.joinpath('static')
+STATIC_ROOT = BASE_DIR.joinpath('siteblog/static')
 STATICFILES_DIRS = [BASE_DIR/'siteblog/static',
                     ]
 
